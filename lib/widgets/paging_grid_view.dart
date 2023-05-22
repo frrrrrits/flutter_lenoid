@@ -2,7 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lenoid/data/controller/base_controller.dart';
+import 'package:lenoid/data/controller/paging_controller.dart';
 import 'package:lenoid/widgets/status/empty_widget.dart';
 import 'package:lenoid/widgets/status/loading_widget.dart';
 import 'package:responsive_grid/responsive_grid.dart';
@@ -15,11 +15,13 @@ class PagingGridView extends StatelessWidget {
   final bool refreshOnStart;
   final bool showPagingLoading;
   final bool scrollAble;
+  final String headerText;
   final List<Widget> children;
 
   const PagingGridView({
     required this.pagination,
     required this.children,
+    required this.headerText,
     this.showPagingLoading = false,
     this.refreshOnStart = false,
     this.minSpacing = 5,
@@ -32,6 +34,7 @@ class PagingGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _widthSize = MediaQuery.of(context).size.width > 700;
     return Obx(
       () => Stack(
         children: [
@@ -52,14 +55,28 @@ class PagingGridView extends StatelessWidget {
             },
             child: SingleChildScrollView(
               controller: pagination.scrollController,
-              child: ResponsiveGridList(
-                scroll: false,
-                minSpacing: minSpacing,
-                controller: pagination.scrollController,
-                desiredItemWidth: desiredItemWidth,
-                rowMainAxisAlignment: rowMainAxisAlignment,
-                children: children,
-              ),
+              child: Column(children: [
+                Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 12),
+                    child: Text(
+                      headerText,
+                      style: _widthSize
+                          ? Theme.of(context).textTheme.displayMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface)
+                          : Theme.of(context).textTheme.titleLarge,
+                    )),
+                ResponsiveGridList(
+                  scroll: false,
+                  shrinkWrap: true,
+                  minSpacing: minSpacing,
+                  controller: pagination.scrollController,
+                  desiredItemWidth: desiredItemWidth,
+                  rowMainAxisAlignment: rowMainAxisAlignment,
+                  children: children,
+                ),
+              ]),
             ),
 
             /* MasonryGridView.count(
@@ -124,7 +141,6 @@ class CustomScrollBehavior extends ScrollBehavior {
         PointerDeviceKind.invertedStylus,
         PointerDeviceKind.mouse,
         PointerDeviceKind.unknown,
-        // add a trackpad
         PointerDeviceKind.trackpad,
       };
 }

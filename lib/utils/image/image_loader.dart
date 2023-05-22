@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
+// image dengan low res di butuhkan biar gak ngecrash (oom)
 CachedNetworkImage LoadImage({
   required String imageUrl,
   required double? height,
@@ -13,10 +14,12 @@ CachedNetworkImage LoadImage({
     imageUrl: imageUrl,
     fit: fit ?? BoxFit.cover,
     height: height,
-    memCacheHeight: 170,
+    memCacheHeight: 150,
     key: ValueKey(imageUrl),
     filterQuality: FilterQuality.low,
-    errorWidget: (_, url, error) => const Icon(Icons.broken_image),
+    fadeInDuration: const Duration(milliseconds: 100),
+    placeholder: (_, error) => const Icon(Icons.image, size: 24),
+    errorWidget: (_, url, error) => const Icon(Icons.broken_image, size: 24),
     cacheManager: CacheManager(Config(
       key,
       repo: JsonCacheInfoRepository(databaseName: key),

@@ -5,6 +5,8 @@ import 'package:lenoid/pages/library/library_page.dart';
 
 class MainController extends GetxController {
   final index = 0.obs;
+  final showContent = false.obs;
+  final GlobalKey indexKey = GlobalKey();
   List<Widget> pages = [const HomePage(), const LibraryPage()];
 
   int get currentPageIndex => index.value;

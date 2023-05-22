@@ -1,3 +1,3 @@
 # lenoid
 
-A new Flutter project.
+first project with flutter just for learning purpose.

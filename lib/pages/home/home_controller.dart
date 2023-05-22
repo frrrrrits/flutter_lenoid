@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:lenoid/data/controller/base_controller.dart';
+import 'package:lenoid/data/controller/paging_controller.dart';
 import 'package:lenoid/model/latest_update.dart';
 import 'package:lenoid/repository/api_repository.dart';
 

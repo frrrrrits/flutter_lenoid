@@ -46,7 +46,9 @@ class EmptyWidget extends StatelessWidget {
                 style: materialTheme.textTheme.displayMedium,
               ),
             ),
-            if (actions!.isNotEmpty)
+            if (actions == null)
+              const SizedBox()
+            else
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

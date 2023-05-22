@@ -1,64 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'main_controller.dart';
+import 'navigator/navigator_route.dart';
+import 'widget/widget_navigation.dart';
 
 class MainPage extends GetView<MainController> {
   const MainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final content = contentNavigator();
+    final indexStack = _buildIndexStack();
     final materialTheme = Theme.of(context);
-    return LayoutBuilder(
-      builder: (context, constraints) {
+    return _buildPanel(context, indexStack, content, materialTheme);
+  }
+
+  Widget _buildPanel(
+    BuildContext context,
+    Widget indexStack,
+    Widget content,
+    ThemeData materialTheme,
+  ) {
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth >= 1000) {
         return Scaffold(
           backgroundColor: materialTheme.colorScheme.onInverseSurface,
-          body: Obx(
-            () => Row(
-              children: [
-                SafeArea(
-                  child: Obx(
-                    () => NavigationRail(
-                      minExtendedWidth: 170,
-                      selectedIndex: controller.currentPageIndex,
-                      extended: constraints.maxWidth >= 1200,
-                      onDestinationSelected: controller.setCurrentPageIndex,
-                      backgroundColor:
-                          materialTheme.colorScheme.onInverseSurface,
-                      leading: Container(
-                        height: 50.0,
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.star_border_purple500_rounded),
-                          ],
-                        ),
-                      ),
-                      destinations: const <NavigationRailDestination>[
-                        NavigationRailDestination(
-                          icon: Icon(Icons.home),
-                          label: Text('Home'),
-                        ),
-                        NavigationRailDestination(
-                          icon: Icon(Icons.collections_bookmark),
-                          label: Text('Library'),
-                        ),
-                      ],
-                    ),
+          body: Row(
+            children: [
+              Visibility(
+                visible: constraints.maxWidth >= 1000,
+                child: const RailNavigationWidget(),
+              ),
+              Container(
+                width: 700,
+                decoration: BoxDecoration(
+                  border: Border(
+                    right: BorderSide(color: Colors.grey.withOpacity(.1)),
                   ),
                 ),
-                // const VerticalDivider(thickness: 1, width: 1),
-                Expanded(
-                  child: IndexedStack(
-                    index: controller.currentPageIndex,
-                    children: controller.pages,
-                  ),
-                ),
-              ],
-            ),
+                child: indexStack,
+              ),
+              Expanded(
+                child: content,
+              ),
+            ],
           ),
         );
-      },
+      } else {
+        return Stack(
+          children: [
+            Scaffold(
+                body: indexStack,
+                bottomNavigationBar: const BottomNavigationWidget()),
+            Obx(
+              () => IgnorePointer(
+                ignoring: !controller.showContent.value,
+                child: content,
+              ),
+            )
+          ],
+        );
+      }
+    });
+  }
+
+  Widget _buildIndexStack() {
+    return Obx(
+      () => IndexedStack(
+        key: controller.indexKey,
+        index: controller.currentPageIndex,
+        children: controller.pages,
+      ),
     );
   }
 }

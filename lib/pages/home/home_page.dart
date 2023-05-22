@@ -11,16 +11,18 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final _widthSize = MediaQuery.of(context).size.width > 600;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
       body: KeepAliveWrapper(
         child: Obx(
           () => PagingGridView(
-            minSpacing: 8,
+            minSpacing: 4,
             refreshOnStart: false,
             pagination: controller,
-            desiredItemWidth: 200,
+            desiredItemWidth: _widthSize ? 200 : 150,
             showPagingLoading: true,
+            headerText: "Latest Update",
             rowMainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(controller.list.length, (i) {
               var item = controller.list[i];

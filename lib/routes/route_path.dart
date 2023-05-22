@@ -1,4 +1,5 @@
 class RoutePath {
   static const kMain = '/main';
-  static const kLbrary = '/library';
+  static const kLibrary = '/library';
+  static const kDetail = '/detail';
 }
