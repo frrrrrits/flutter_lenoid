@@ -1,0 +1,62 @@
+name: Build and Deploy Debug Flutter App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-debug-flutter-app:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v
+    - uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1.4.0
+      with:
+        channel: stable # Use the stable channel for Dart
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.pub-cache
+          ~/.gradle/caches/
+          ~/.gradle/wrapper/
+        key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}-gradle-${{ hashFiles('**/build.gradle') }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-pub-
+          ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}-
+          ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}-gradle-
+          ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}-gradle-${{ hashFiles('**/build.gradle') }}-
+          ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}-gradle-${{ hashFiles('**/build.gradle') }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          
+    - name: Build Android debug app
+      run: flutter build apk --debug
+
+    - name: Upload Android artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug
+        path: build/app/outputs/apk/debug/app-debug.apk
+
+    - name: Build Linux debug app
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev
+        flutter config --enable-linux-desktop
+        flutter build linux --debug
+
+    - name: Archive Linux artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug-linux
+        path: build/linux/debug/bundle
