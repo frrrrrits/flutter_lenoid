@@ -6,19 +6,26 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 CachedNetworkImage LoadImage({
   required String imageUrl,
   required double? height,
+  double? width,
   BoxFit? fit,
   Duration? duration,
+  int? memCacheHeight,
+  FilterQuality? filter,
+  bool progressPlaceHolder = false,
 }) {
   const key = 'lendoid_image_cache';
   return CachedNetworkImage(
     imageUrl: imageUrl,
     fit: fit ?? BoxFit.cover,
     height: height,
-    memCacheHeight: 150,
+    width: width,
+    memCacheHeight: memCacheHeight ?? 150,
     key: ValueKey(imageUrl),
-    filterQuality: FilterQuality.low,
+    filterQuality: filter ?? FilterQuality.low,
     fadeInDuration: const Duration(milliseconds: 100),
-    placeholder: (_, error) => const Icon(Icons.image, size: 24),
+    placeholder: (_, error) => progressPlaceHolder
+        ? const Center(child: CircularProgressIndicator())
+        : const Icon(Icons.broken_image, size: 24),
     errorWidget: (_, url, error) => const Icon(Icons.broken_image, size: 24),
     cacheManager: CacheManager(Config(
       key,

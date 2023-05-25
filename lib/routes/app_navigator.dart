@@ -37,8 +37,9 @@ class AppNavigator {
     }
   }
 
-  static void toDetailPage(String title) {
+  static void toDetailPage(String url, String title) {
     toContentPage(RoutePath.kDetail, replace: true, arg: {
+      "url": url,
       "title": title,
     });
   }

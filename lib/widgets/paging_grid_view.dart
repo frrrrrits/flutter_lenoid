@@ -1,8 +1,8 @@
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lenoid/data/controller/paging_controller.dart';
+import 'package:lenoid/utils/behavior/custom_behavior.dart';
 import 'package:lenoid/widgets/status/empty_widget.dart';
 import 'package:lenoid/widgets/status/loading_widget.dart';
 import 'package:responsive_grid/responsive_grid.dart';
@@ -39,7 +39,7 @@ class PagingGridView extends StatelessWidget {
       () => Stack(
         children: [
           EasyRefresh(
-            header: const ClassicHeader(
+            header: const MaterialHeader(
               processedDuration: Duration(milliseconds: 400),
             ),
             footer: const ClassicFooter(
@@ -122,25 +122,4 @@ class PagingGridView extends StatelessWidget {
       ),
     );
   }
-}
-
-class CustomScrollBehavior extends ScrollBehavior {
-  final ScrollPhysics? _physics;
-
-  const CustomScrollBehavior([this._physics]);
-
-  @override
-  ScrollPhysics getScrollPhysics(BuildContext context) {
-    return _physics ?? super.getScrollPhysics(context);
-  }
-
-  @override
-  Set<PointerDeviceKind> get dragDevices => <PointerDeviceKind>{
-        PointerDeviceKind.touch,
-        PointerDeviceKind.stylus,
-        PointerDeviceKind.invertedStylus,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.unknown,
-        PointerDeviceKind.trackpad,
-      };
 }

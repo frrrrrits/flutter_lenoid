@@ -17,7 +17,7 @@ class HomePage extends GetView<HomeController> {
       body: KeepAliveWrapper(
         child: Obx(
           () => PagingGridView(
-            minSpacing: 4,
+            minSpacing: 3,
             refreshOnStart: false,
             pagination: controller,
             desiredItemWidth: _widthSize ? 200 : 150,

@@ -7,7 +7,7 @@
         {
             "name": "lenoid",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         },
         {
             "name": "lenoid (profile mode)",

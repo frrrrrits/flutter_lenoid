@@ -34,7 +34,7 @@ class EmptyWidget extends StatelessWidget {
           children: [
             Text(
               getRandomFace(),
-              style: materialTheme.textTheme.displayLarge!.copyWith(
+              style: materialTheme.textTheme.displayMedium!.copyWith(
                 color: materialTheme.colorScheme.onSurface.withAlpha(97),
               ),
             ),
@@ -77,6 +77,13 @@ class EmptyWidget extends StatelessWidget {
 }
 
 var _error_faces = [
+  "(ﾉ´ з `)ノ",
+  "(￣ε￣＠)",
+  "(.❛ ᴗ ❛.)",
+  "(/ω＼)",
+  "!(•̀ᴗ•́)و ̑̑",
+  "(•̀o•́)ง",
+  "ʕ •ᴥ•ʔ",
   "(･o･;)",
   "Σ(ಠ_ಠ)",
   "ಥ_ಥ",

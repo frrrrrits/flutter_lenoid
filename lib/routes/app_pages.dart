@@ -39,7 +39,7 @@ class AppPages {
         final parameter = settings.arguments as Map;
         return GetPageRoute(
           settings: settings,
-          page: () => DetailPage(parameter['title']),
+          page: () => DetailPage(parameter['url'], parameter['title']),
         );
       default:
         return GetPageRoute(page: () => const EmptyView());

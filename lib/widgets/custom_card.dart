@@ -7,10 +7,12 @@ class CustomCard extends StatelessWidget {
     required this.child,
     this.onTap,
     this.padding,
+    this.elevation,
     this.backgroundColor,
   }) : super(key: key);
   final bool isFilled;
   final Widget child;
+  final double? elevation;
   final Function()? onTap;
   final EdgeInsetsGeometry? padding;
   final Color? backgroundColor;
@@ -18,7 +20,7 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 0,
+      elevation: elevation ?? 0,
       type: isFilled ? MaterialType.card : MaterialType.transparency,
       color: isFilled
           ? backgroundColor?.withOpacity(0.4) ??

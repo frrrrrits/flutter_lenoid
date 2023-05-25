@@ -4,6 +4,8 @@ import 'package:lenoid/routes/app_pages.dart';
 import 'package:lenoid/routes/route_path.dart';
 import 'package:lenoid/themes.dart';
 
+import 'utils/behavior/custom_behavior.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
       initialRoute: RoutePath.kMain,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const CustomScrollBehavior(),
     );
   }
 }

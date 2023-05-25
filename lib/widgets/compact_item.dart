@@ -19,7 +19,7 @@ class CompactItem extends StatelessWidget {
       margin: const EdgeInsets.only(top: 7, right: 7),
       child: CustomCard(
         onTap: () {
-          AppNavigator.toDetailPage(item.name);
+          AppNavigator.toDetailPage(item.episodeUrl, item.name);
         },
         padding: const EdgeInsets.all(0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -38,7 +38,7 @@ class CompactItem extends StatelessWidget {
             future: Future.delayed(delay, () => item.thumbnail),
             builder: (_, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return ClipRRect(
+                return /* ClipRRect(
                   borderRadius: BorderRadius.circular(13),
                   child: AspectRatio(
                     aspectRatio: 80 / 45,
@@ -47,18 +47,19 @@ class CompactItem extends StatelessWidget {
                       imageUrl: snapshot.data!,
                     ),
                   ),
-                );
-                /* AspectRatio(
+                ); */
+                    AspectRatio(
                   aspectRatio: 80 / 45,
                   child: ExtendedImage.network(
                     snapshot.data!,
                     cacheHeight: 150,
+                    height: 140,
                     shape: BoxShape.rectangle,
                     imageCacheName: 'lenoid_image',
                     filterQuality: FilterQuality.low,
                     borderRadius: BorderRadius.circular(13),
                   ),
-                ); */
+                );
               } else {
                 return const SizedBox(height: 140);
               }
