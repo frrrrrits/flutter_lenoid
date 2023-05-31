@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
+import 'package:lenoid/utils/logger/log.dart';
 import 'package:lenoid/widgets/status/empty_widget.dart';
+import 'package:lenoid/widgets/toast.dart';
 import 'library_controller.dart';
 
 class LibraryPage extends GetView<LibraryController> {
@@ -13,29 +15,31 @@ class LibraryPage extends GetView<LibraryController> {
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: EmptyWidget(
-          message: "Gagal Memuat Data",
+          message: "Page under WIP",
           actions: [
             EmptyWidgetButton(
-              text: "Button 1",
-              icon: const Icon(Icons.refresh),
-              actions: () => Get.snackbar('Helllo', 'from EmptyWidget',
-                  snackPosition: SnackPosition.TOP,
-                  margin: const EdgeInsets.all(30),
-                  colorText: Theme.of(context).colorScheme.surface,
-                  backgroundColor: Theme.of(context)
-                      .colorScheme
-                      .inverseSurface
-                      .withAlpha(179)),
-            ),
-            EmptyWidgetButton(
-                text: "Button 2",
+                text: "Clear Image Cache",
                 icon: const Icon(Icons.refresh),
                 actions: () {
-                  DefaultCacheManager().emptyCache();
+                  clearCache();
+                  context.showSnackBar("Image Cache Deleted");
                 }),
           ],
         ),
       ),
     );
+  }
+
+  void clearCache() async {
+    await DefaultCacheManager().emptyCache();
+    PaintingBinding.instance.imageCache.clear();
+    try {
+      await JsonCacheInfoRepository(databaseName: "lendoid_image_cache")
+          .deleteDataFile();
+    } catch (e, s) {
+      Log.e("clearCache", s);
+    }
+    imageCache.clear();
+    imageCache.clearLiveImages();
   }
 }

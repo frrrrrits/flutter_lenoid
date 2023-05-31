@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lenoid/routes/app_navigator.dart';
 
 import 'detail_controller.dart';
 import 'screen/details/details_screen.dart';
@@ -9,9 +10,13 @@ class DetailPage extends StatelessWidget {
   final String url;
   final String title;
   final DetailController controller;
-  DetailPage(this.url, this.title, {Key? key})
-      : controller = Get.put(DetailController(url: url)),
-        super(key: key);
+  DetailPage(this.url, this.title, {super.key})
+      : controller = Get.put(
+          DetailController(url: url),
+          // requires a "tag" so the data that is loaded
+          // will be different every time changing "page" or "route"
+          tag: DateTime.now().millisecondsSinceEpoch.toString(),
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +27,13 @@ class DetailPage extends StatelessWidget {
           return [
             SliverAppBar(
               title: Text(title),
+              leading: IconButton(
+                icon: const Icon(Icons.close_outlined),
+                onPressed: () => AppNavigator.closePage(),
+              ),
               bottom: TabBar(
-                tabs: [
-                  const Tab(
+                tabs: const [
+                  Tab(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -34,7 +43,7 @@ class DetailPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Tab(
+                  Tab(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -54,7 +63,7 @@ class DetailPage extends StatelessWidget {
           controller: controller.tabController,
           children: [
             const DownloadScreen(),
-            DetailsScreen(),
+            DetailsScreen(url: url),
           ],
         ),
       ),

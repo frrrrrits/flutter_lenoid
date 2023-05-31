@@ -1,7 +1,5 @@
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lenoid/utils/behavior/custom_behavior.dart';
 import 'package:lenoid/utils/color/color_utils.dart';
 import 'package:lenoid/utils/image/image_loader.dart';
 import 'package:lenoid/widgets/custom_card.dart';
@@ -10,34 +8,37 @@ import 'package:lenoid/widgets/keep_alive_wrapper.dart';
 import 'details_screen_controller.dart';
 
 class DetailsScreen extends StatelessWidget {
+  final String url;
   final DetailsScreenController controller;
-  DetailsScreen({Key? key})
-      : controller = Get.put(DetailsScreenController()),
-        super(key: key);
+  DetailsScreen({required this.url, super.key})
+      : controller = Get.put(
+          DetailsScreenController(url),
+          tag: DateTime.now().millisecondsSinceEpoch.toString(),
+        );
 
   @override
   Widget build(BuildContext context) {
     final materialTheme = Theme.of(context);
     return Scaffold(
-      body: KeepAliveWrapper(
-        child: Stack(
+      body: Obx(
+        () => Stack(
           children: [
-            EasyRefresh(
-              refreshOnStart: true,
-              header: const MaterialHeader(),
-              footer: const MaterialFooter(),
-              scrollBehaviorBuilder: (physic) {
-                return CustomScrollBehavior(physic);
-              },
-              child: ListView(
-                children: [
-                  _buildCoverDetails(materialTheme),
-                  _episodeItem(materialTheme),
-                  _episodeItem(materialTheme),
-                  _episodeItem(materialTheme),
-                ],
-              ),
-            )
+            ListView(
+              children: [
+                _buildCoverDetails(materialTheme),
+                ...List.generate(controller.episodeLength, (i) {
+                  return _episodeItem(
+                    materialTheme,
+                    episodeTitle: controller.episodeModel![i].title,
+                    episodeDate: controller.episodeModel![i].dateUpload,
+                  );
+                })
+              ],
+            ),
+            Offstage(
+              offstage: !controller.pagingLoading.value,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
           ],
         ),
       ),
@@ -59,15 +60,25 @@ class DetailsScreen extends StatelessWidget {
                 backgroundColor: ColorUtils.elevationOverlay,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(13),
-                  child: LoadImage(
-                    height: 230,
-                    width: 150,
-                    memCacheHeight: 400,
-                    filter: FilterQuality.high,
-                    progressPlaceHolder: true,
-                    imageUrl:
-                        "https://lendrive.web.id/wp-content/uploads/2023/04/1681178702-6099-130452.jpg",
-                  ),
+                  child: controller.detailModel?.thumbnail.isEmpty ?? true
+                      ? Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(.1),
+                          ),
+                          child: const Icon(
+                            Icons.image,
+                            color: Colors.grey,
+                            size: 24,
+                          ),
+                        )
+                      : LoadImage(
+                          height: 230,
+                          width: 150,
+                          memCacheHeight: 400,
+                          filter: FilterQuality.high,
+                          progressPlaceHolder: true,
+                          imageUrl: controller.detailModel?.thumbnail ?? "",
+                        ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -76,7 +87,7 @@ class DetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Kanojo ga Koushaku-tei ni Itta Riyuu, Kanojo ga Koushaku-tei ni Itta Riyuu',
+                      controller.detailModel?.title ?? "Tidak di Ketahui",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: materialTheme.textTheme.titleLarge,
@@ -86,19 +97,22 @@ class DetailsScreen extends StatelessWidget {
                       _textSummaryBody(
                         materialTheme,
                         textTitle: "Season",
-                        textBody: "textBody",
+                        textBody: controller.detailModel?.season ??
+                            "Tidak di Ketahui",
                       ),
                       // const SizedBox(width: 10, height: 8),
                       _textSummaryBody(
                         materialTheme,
                         textTitle: "Status",
-                        textBody: "textBody",
+                        textBody: controller.detailModel?.status ??
+                            "Tidak di Ketahui",
                       ),
                       // const SizedBox(width: 10, height: 8),
                       _textSummaryBody(
                         materialTheme,
                         textTitle: "Studio",
-                        textBody: "textBody",
+                        textBody: controller.detailModel?.studio ??
+                            "Tidak di Ketahui",
                       ),
                     ]),
                   ],
@@ -118,7 +132,7 @@ class DetailsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis gravida nisl. Fusce euismod elit vel arcu tincidunt, nec posuere mi egestas. Sed nec orci nisi. Nulla facilisi. Integer euismod massa quis nisl eleifend, ac blandit dui vehicula. Proin vitae enim euismod, faucibus nibh eget, bibendum augue. Sed vestibulum urna vel cursus vestibulum. Integer dignissim erat non orci facilisis, sed dignissim velit molestie. Vivamus lacinia, libero ac lobortis tincidunt, mi quam lobortis enim, sed eleifend quam urna vel velit. Sed vel orci ligula.',
+            controller.detailModel?.sinopsis ?? "Tidak di Ketahui",
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -129,35 +143,41 @@ class DetailsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Obx(
-            () => Offstage(
-              offstage: controller.listGenre.isEmpty,
-              child: Wrap(
-                spacing: 6,
-                children: controller.listGenre.map(
-                  (genre) {
-                    return Chip(
-                      label: Text(genre.title),
+          Offstage(
+            offstage: controller.genreModel?.isEmpty ?? true,
+            child: Wrap(
+              spacing: 6,
+              children: List.generate(
+                controller.genreModel?.length ?? 0,
+                (index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3),
+                    child: Chip(
+                      label: Text(controller.genreModel![index].title),
                       labelStyle: const TextStyle(fontSize: 12),
                       backgroundColor:
                           materialTheme.colorScheme.onInverseSurface,
                       side: BorderSide.none,
-                    );
-                  },
-                ).toList(),
+                    ),
+                  );
+                },
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _episodeItem(ThemeData materialTheme) {
+  Widget _episodeItem(
+    ThemeData materialTheme, {
+    required String? episodeTitle,
+    required String? episodeDate,
+  }) {
     return ListTile(
       leading: const Icon(Icons.bookmark_add_outlined),
-      title: const Text("Oshi No Ko – Ep 01"),
-      subtitle: const Text("April 27, 2023"),
+      title: Text(episodeTitle ?? "Not Found"),
+      subtitle: Text(episodeDate ?? "Not Found"),
       titleTextStyle: materialTheme.textTheme.titleMedium,
       subtitleTextStyle: materialTheme.textTheme.bodySmall,
     );

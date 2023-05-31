@@ -34,7 +34,7 @@ class EmptyWidget extends StatelessWidget {
           children: [
             Text(
               getRandomFace(),
-              style: materialTheme.textTheme.displayMedium!.copyWith(
+              style: materialTheme.textTheme.displayLarge!.copyWith(
                 color: materialTheme.colorScheme.onSurface.withAlpha(97),
               ),
             ),
@@ -43,31 +43,34 @@ class EmptyWidget extends StatelessWidget {
               child: Text(
                 message,
                 textAlign: TextAlign.center,
-                style: materialTheme.textTheme.displayMedium,
+                style: materialTheme.textTheme.displaySmall,
               ),
             ),
             if (actions == null)
               const SizedBox()
             else
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var it in actions!)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                        vertical: 14,
-                      ),
-                      child: FilledButton.icon(
-                        icon: it.icon,
-                        label: Text(it.text),
-                        onPressed: it.actions,
-                        style: FilledButton.styleFrom(
-                          fixedSize: const Size.fromHeight(40),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  spacing: 5,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    for (var it in actions!)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4,
+                        ),
+                        child: FilledButton.icon(
+                          icon: it.icon,
+                          label: Text(it.text),
+                          onPressed: it.actions,
+                          style: FilledButton.styleFrom(
+                            fixedSize: const Size.fromHeight(40),
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               )
           ],
         ),

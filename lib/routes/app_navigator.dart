@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lenoid/pages/main/main_controller.dart';
 import 'package:lenoid/routes/route_path.dart';
+import 'package:lenoid/utils/logger/log.dart';
 
 // tbh this is not my code
 class AppNavigator {
@@ -22,6 +23,7 @@ class AppNavigator {
   }
 
   static void toContentPage(String name, {dynamic arg, bool replace = false}) {
+    Log.i("toContentPage: $currentContentRouteName $name");
     if (currentContentRouteName == name && replace) {
       Get.offAndToNamed(name, arguments: arg, id: defaultNavigatorId);
     } else {
@@ -38,7 +40,7 @@ class AppNavigator {
   }
 
   static void toDetailPage(String url, String title) {
-    toContentPage(RoutePath.kDetail, replace: true, arg: {
+    toContentPage(RoutePath.kDetail, arg: {
       "url": url,
       "title": title,
     });
@@ -46,8 +48,6 @@ class AppNavigator {
 }
 
 class SubNavigatorObserver extends NavigatorObserver {
-  // it will show actual view that admit on the route index
-  // or show faking (empty view) as default
   @override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);

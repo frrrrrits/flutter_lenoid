@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lenoid/pages/main/navigator/navigator_route.dart';
 
 import 'main_controller.dart';
-import 'navigator/navigator_route.dart';
 import 'widget/widget_navigation.dart';
 
 class MainPage extends GetView<MainController> {

@@ -2,20 +2,35 @@ class DetailModel {
   final String title;
   final String sinopsis;
   final String thumbnail;
-  final String season, status, studio;
+  final String season;
+  final String status;
+  final String studio;
   final List<Genres> genre;
-  DetailModel(
-    this.genre,
-    this.title,
-    this.sinopsis,
-    this.thumbnail,
-    this.season,
-    this.status,
-    this.studio,
-  );
+  final List<Episodes> episodes;
+  DetailModel({
+    required this.genre,
+    required this.title,
+    required this.sinopsis,
+    required this.thumbnail,
+    required this.season,
+    required this.status,
+    required this.studio,
+    required this.episodes,
+  });
 }
 
 class Genres {
   final String title;
   Genres(this.title);
+}
+
+class Episodes {
+  final String url;
+  final String title;
+  final String dateUpload;
+  Episodes({
+    required this.url,
+    required this.title,
+    required this.dateUpload,
+  });
 }

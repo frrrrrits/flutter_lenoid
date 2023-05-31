@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:lenoid/model/latest_update.dart';
 import 'package:lenoid/routes/app_navigator.dart';
 import 'package:lenoid/utils/image/image_loader.dart';
+import 'package:lenoid/utils/logger/log.dart';
+import 'package:lenoid/utils/text/comparasion_utils.dart';
 import 'package:lenoid/widgets/custom_card.dart';
+import 'package:lenoid/widgets/toast.dart';
 
 class CompactItem extends StatelessWidget {
   final LatestUpdate item;
